@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcryptjs')
 var db = require('./../models');
+var unirest = require('unirest');
 
 //Home Page
 router.get('/', function(req, res, next) {
@@ -10,11 +11,19 @@ router.get('/', function(req, res, next) {
   } else {
     var fullName = null;
   }
-  res.render('index', {fullName: fullName});
+  unirest.get('http://api.songkick.com/api/3.0/metro_areas/6404/calendar.json?apikey=e8kAdG7bsjfFCa5l')
+  .end(function (response) {
+    console.log(response.body.resultsPage.results.event);
+      res.render('index', {fullName: fullName});
+  })
 });
 
 router.post('/help', function (req,res,next){
-  res.render('index');
+  unirest.get('http://api.songkick.com/api/3.0/metro_areas/6404/calendar.json?apikey=e8kAdG7bsjfFCa5l')
+  .end(function (response) {
+    res.render('index');
+  })
+
 });
 
 router.post('/login', function (req,res,next){
